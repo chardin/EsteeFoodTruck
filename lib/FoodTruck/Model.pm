@@ -17,18 +17,21 @@ sub _build_storage_engine {
     return $storage;
 }
 
+sub id_fields { die 'id_fields must be implemented in a chuld class' }
+sub table { die 'table must be implemented in a chuld class' }
+
 sub find {
     my ($self, $locationid) = @_;
 
-    return $self->storage_engine->find($locationid);
+    my $id_fields = $self->id_fields;
+    return $self->storage_engine->find($self->table, @$id_fields);
 }
 
 sub search {
     my ($self, $params) = @_;
 
-    return $self->storage_engine->search($params);
+    return $self->storage_engine->search($self->table, $params);
 }
-    
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -53,6 +56,22 @@ This module is a base class for Model objects in the FoodTruck
 backend.
 
 =head1 PUBLIC CLASS METHODS
+
+=head2 table
+
+    public class
+    (Str) table()
+
+Returns the table associated with a given model class.  Implemented in
+child classes only.
+
+=head2 id_fields
+
+    public class
+    (ArrayRef[Str][) id_fields()
+
+Returns the ID fields associated with a given model class.
+Implemented in child classes only.
 
 =head2 find
 

@@ -4,6 +4,9 @@ use Moose;
 
 extends 'FoodTruck::Model';
 
+sub table { 'FoodTruck' }
+sub id_fields { [ qw/locationid/ ] }
+
 has locationid => (is => 'ro', isa => 'Str');
 has Applicant => (is => 'ro', isa => 'Str');
 has FacilityType => (is => 'ro', isa => 'Str');

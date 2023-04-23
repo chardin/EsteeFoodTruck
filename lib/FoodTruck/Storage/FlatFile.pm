@@ -35,17 +35,17 @@ sub _build__data {
       $ft_data{$datum->{locationid}} = $datum;
   }
   
-  return \%ft_data;
+  return {FoodTruck => \%ft_data};
 }
 
 sub search {
-    my ($self, $params) = @_;
+    my ($self, $tqble, $params) = @_;
 
     my %results;
 
   LOCATION:
-    foreach my $locationid (keys %{$self->_data}) {
-        my $datum = $self->_data->{$locationid};
+    foreach my $locationid (keys %{$self->_data->{FoodTruck}}) {
+        my $datum = $self->_data->{FoodTruck}{$locationid};
 
         foreach my $key (keys %$params) {
             next LOCATION unless $datum->{$key} eq $params->{$key};
@@ -58,9 +58,14 @@ sub search {
 }
 
 sub find {
-    my ($self, $locationid) = @_;
+    my ($self, $table, $id_field_values) = @_;
 
-    return $self->_data->{$locationid};
+    my $value = $self->_data->{$table};
+    foreach my $field_value (@$id_field_values) {
+        $value = $value->{$field_value};
+    }
+    
+    return $value;
 }
 
 1;
